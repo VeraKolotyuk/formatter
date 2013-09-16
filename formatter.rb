@@ -1,11 +1,11 @@
 class InputStreamReader
 
-	attr_accessor :stream
+    attr_accessor :stream
 
-	def initialize(stream)
-		@stream = stream
-	end
-	
+    def initialize(stream)
+        @stream = stream
+    end
+
 end
 
 class OutputStreamWriter
@@ -42,6 +42,32 @@ class Formatter
 	    @levels_count = 0
 	end
 
+	def format(output_stream_writer, char)
+	    symbol = char.to_s().strip
+	    unless is_end_of_str(symbol)
+			if is_semicolon(symbol)
+				output_stream_writer.write_symbol(symbol)
+				output_stream_writer.write_symbol(END_OF_STRING)
+				output_stream_writer.print_indent(@levels_count, SPACES_COUNT_IN_LEVEL)
+		    elsif is_open_bracket(symbol)
+		    	@levels_count = @levels_count + 1
+		    	output_stream_writer.write_symbol(SPACE_SYMBOL)
+		    	output_stream_writer.write_symbol(OPEN_BRACKET)
+		    	output_stream_writer.write_symbol(END_OF_STRING)
+		    	output_stream_writer.print_indent(@levels_count, SPACES_COUNT_IN_LEVEL)
+		    elsif is_close_bracket(symbol)
+		    	@levels_count = @levels_count - 1
+		    	output_stream_writer.write_symbol(END_OF_STRING)
+		    	output_stream_writer.print_indent(@levels_count, SPACES_COUNT_IN_LEVEL)
+		    	output_stream_writer.write_symbol(CLOSE_BRACKET)
+		    else
+		    	output_stream_writer.write_symbol(symbol)
+		    end
+		end
+	end
+
+	private
+
 	def is_open_bracket(symbol)
 		symbol.eql?(OPEN_BRACKET)
 	end
@@ -57,39 +83,15 @@ class Formatter
 	def is_end_of_str(symbol)
 		symbol.eql?(END_OF_STRING)
 	end
-
-	
-	def format(input_stream_reader, output_stream_writer, c)
-	    symbol = c.to_s().strip
-	    unless is_end_of_str(symbol)
-			if is_semicolon(symbol)
-				output_stream_writer.write_symbol(symbol)
-				output_stream_writer.write_symbol(END_OF_STRING)
-		    elsif is_open_bracket(symbol)
-		    	@levels_count = @levels_count + 1
-		    	output_stream_writer.write_symbol(SPACE_SYMBOL)
-		    	output_stream_writer.write_symbol(OPEN_BRACKET)
-		    	output_stream_writer.write_symbol(END_OF_STRING)		    	
-		    	output_stream_writer.print_indent(@levels_count, SPACES_COUNT_IN_LEVEL)		    			    	
-		    elsif is_close_bracket(symbol)
-		    	@levels_count = @levels_count - 1
-		    	output_stream_writer.write_symbol(END_OF_STRING)
-		    	output_stream_writer.print_indent(@levels_count, SPACES_COUNT_IN_LEVEL)
-		    	output_stream_writer.write_symbol(CLOSE_BRACKET)
-		    else	    	
-		    	output_stream_writer.write_symbol(symbol)
-		    end
-		end
-	end
 end
 
 File.open('code.txt','r') do |input|
-  File.open('new_code.txt', 'w') do |output|
+	File.open('new_code.txt', 'w') do |output|
 	    reader = InputStreamReader.new(input)
 	    writer = OutputStreamWriter.new(output)
 	    formatter = Formatter.new
-	    reader.stream.each_char do |c|
-		    formatter.format(reader, writer, c)
+	    reader.stream.each_char do |char|
+		    formatter.format(writer, char)
 	    end
 	end
 end
