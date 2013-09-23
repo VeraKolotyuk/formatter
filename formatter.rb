@@ -42,7 +42,6 @@ class Formatter
 					print_indent(output_stream_writer)
 			    elsif is_open_bracket(symbol)
 			    	@levels_count = @levels_count + 1
-			    	output_stream_writer.write_symbol(" ")
 			    	output_stream_writer.write_symbol("{")
 			    	output_stream_writer.write_symbol("\n")
 			    	print_indent(output_stream_writer)

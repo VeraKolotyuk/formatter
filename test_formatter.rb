@@ -1,5 +1,6 @@
 require "./formatter"
 require "test/unit"
+require 'fileutils'
 
 class TestFormatter < Test::Unit::TestCase
 
@@ -11,18 +12,16 @@ class TestFormatter < Test::Unit::TestCase
     ## Nothing really
   end
 
-  def test_simple
-    # File.open('code.txt','r') do |input|
-    #     File.open('new_code.txt', 'w') do |output|
-    #         reader = InputStreamReader.new(input)
-    #         writer = OutputStreamWriter.new(output)
-    #         formatter = Formatter.new
-    #         formatter.format(reader, writer)
-    #     end
-    # end
-    # old_file = File.open("code.txt", "rb")
-    # new_file = File.open("new_code.txt", "rb")
-    # assert_equal(old_file.read, new_file.read)
+  def test_correct
+    File.open('test-data/source-correct.txt','r') do |input|
+        File.open('test-data/target-test-correct.txt', 'w') do |output|
+            reader = InputStreamReader.new(input)
+            writer = OutputStreamWriter.new(output)
+            formatter = Formatter.new
+            formatter.format(reader, writer)
+        end
+    end
+    assert_equal(FileUtils.compare_file('test-data/target-test-correct.txt', 'test-data/target-correct.txt'), true)
   end
 
 end

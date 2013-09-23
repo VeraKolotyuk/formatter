@@ -1,0 +1,6 @@
+{
+    line;
+    {
+        second_line
+    }
+}
